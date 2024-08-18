@@ -1,0 +1,146 @@
+/* Algorithm below 
+1.Start
+
+2.Initialize:
+Set front = -1 and rear = -1
+3.Read size of queue
+
+4.Function Definitions:
+
+*isFull():
+  If (rear + 1) % size == front, return True (Queue is full)
+  Else, return False
+*isEmpty():
+  If front == -1, return True (Queue is empty)
+  Else, return False
+*enqueue(element):
+  If isFull(), print "Overflow"
+  Else,
+    If isEmpty(), set front = rear = 0
+    Else, set rear = (rear + 1) % size
+    Insert element in queue[rear]
+*dequeue():
+  If isEmpty(), print "Underflow"
+  Else,
+    Print queue[front]
+    If front == rear, set front = rear = -1
+    Else, set front = (front + 1) % size
+*peek():
+  If isEmpty(), print "Underflow"
+  Else, print queue[front]
+5.Menu Driven Program:
+  Repeat until the user exits:
+  Print menu options: Insert, Delete, Peek, Display, Exit
+  Read user choice
+  Perform respective function call based on choice
+6.Stop */
+#include <stdio.h>
+
+#define SIZE 50
+
+int front = -1, rear = -1, queue[SIZE], size;
+
+int isFull() {
+    return ((rear + 1) % size == front);
+}
+
+int isEmpty() {
+    return (front == -1);
+}
+
+void enqueue(int element) {
+    if (isFull()) {
+        printf("\t\tOverflow\n");
+    } else {
+        if (isEmpty()) {
+            front = rear = 0;
+        } else {
+            rear = (rear + 1) % size;
+        }
+        queue[rear] = element;
+        printf("\t\tInserted element: %d\n", element);
+    }
+}
+
+void dequeue() {
+    if (isEmpty()) {
+        printf("\t\tUnderflow\n");
+    } else {
+        printf("\t\tDeleted element: %d\n", queue[front]);
+        if (front == rear) {
+            front = rear = -1;
+        } else {
+            front = (front + 1) % size;
+        }
+    }
+}
+
+void peek() {
+    if (isEmpty()) {
+        printf("\t\tUnderflow\n");
+    } else {
+        printf("\t\tFront element: %d\n", queue[front]);
+    }
+}
+
+void display() {
+    if (isEmpty()) {
+        printf("Queue is empty\n");
+        return;
+    }
+
+    printf("Queue elements are: ");
+    for (int i = front; i != rear; i = (i + 1) % size) {
+        printf("%d ", queue[i]);
+    }
+    // Print the last element at rear
+    printf("%d\n", queue[rear]);
+}
+
+
+int main() {
+    int choice, element;
+    char cont;
+
+    printf("\n\tPROGRAM TO INSERT, DELETE AND DISPLAY ELEMENTS IN CIRCULAR QUEUE");
+    printf("\n\t.......................................................");
+    printf("\n\tEnter the size of the queue: ");
+    scanf("%d", &size);
+
+    do {
+        printf("\n\t\t\t\tMENU\n\n");
+        printf("\t\t1.INSERT\n\t\t2.DELETE\n\t\t3.PEEK\n\t\t4.DISPLAY\n\t\t5.EXIT\n\t\tEnter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                printf("\t\tEnter the element: ");
+                scanf("%d", &element);
+                enqueue(element);
+                break;
+            case 2:
+                dequeue();
+                break;
+            case 3:
+                peek();
+                break;
+            case 4:
+                display();
+                break;
+            case 5:
+                printf("\t\tExiting...\n");
+                break;
+            default:
+                printf("\t\tInvalid choice\n");
+        }
+
+        if (choice != 5) {
+            printf("\t\tDo you want to continue (y/n): ");
+            scanf(" %c", &cont);
+        }
+    } while (cont == 'y' || cont == 'Y');
+
+    return 0;
+}
+
+
