@@ -1,0 +1,149 @@
+#include <stdio.h>
+
+// Function to transpose a sparse matrix with nested loops
+void transposeSparseMatrix(int sparse[100][3], int size) {
+    int numCols = sparse[0][1];    // Number of columns in the original matrix
+    int numNonZero = sparse[0][2]; // Number of non-zero elements
+    int transpose[100][3];
+    int k = 1;
+
+    // Setting the header row for transpose matrix
+    transpose[0][0] = sparse[0][1];  // Number of rows in transpose = columns of original
+    transpose[0][1] = sparse[0][0];  // Number of columns in transpose = rows of original
+    transpose[0][2] = sparse[0][2];  // Number of non-zero elements remains the same
+
+    // For each column in the original matrix, look for non-zero elements
+    for (int col = 0; col < numCols; col++) {
+        for (int i = 1; i <= numNonZero; i++) {
+            if (sparse[i][1] == col) { // Check if the column matches the current column
+                transpose[k][0] = sparse[i][1];  // Transpose row becomes original column
+                transpose[k][1] = sparse[i][0];  // Transpose column becomes original row
+                transpose[k][2] = sparse[i][2];  // Value remains the same
+                k++;
+            }
+        }
+    }
+
+    // Displaying the transposed sparse matrix
+    printf("Transpose of the sparse matrix (row, col, value):\n");
+    for (int i = 0; i <= numNonZero; i++) {
+        printf("%d %d %d\n", transpose[i][0], transpose[i][1], transpose[i][2]);
+    }
+}
+
+int main() {
+    int size;
+    int sparse[100][3];
+
+    // Input sparse matrix with header row
+    printf("Enter the number of elements in the sparse matrix (including header row): ");
+    scanf("%d", &size);
+
+    printf("Enter the elements of the sparse matrix (row, col, value):\n");
+    for (int i = 0; i < size; i++) {
+        scanf("%d %d %d", &sparse[i][0], &sparse[i][1], &sparse[i][2]);
+    }
+
+    transposeSparseMatrix(sparse, size);
+    return 0;
+}
+#include <stdio.h>
+
+void convertToSparse(int matrix[10][10], int sparse[100][3], int rows, int cols) {
+    int k = 1;
+
+    sparse[0][0] = rows;   // Header: number of rows
+    sparse[0][1] = cols;   // Header: number of columns
+    sparse[0][2] = 0;      // Initialize count of non-zero elements
+
+    // Traverse through the matrix and store non-zero elements
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            if (matrix[i][j] != 0) {
+                sparse[k][0] = i;       // Row index
+                sparse[k][1] = j;       // Column index
+                sparse[k][2] = matrix[i][j];  // Non-zero value
+                k++;
+                sparse[0][2]++;         // Update non-zero element count
+            }
+        }
+    }
+}
+
+int main() {
+    int rows, cols;
+    int matrix[10][10], sparse[100][3];
+
+    printf("Enter the number of rows and columns: ");
+    scanf("%d %d", &rows, &cols);
+
+    printf("Enter the elements of the matrix:\n");
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            scanf("%d", &matrix[i][j]);
+        }
+    }
+
+    convertToSparse(matrix, sparse, rows, cols);
+
+    printf("Sparse matrix (row, col, value):\n");
+    for (int i = 0; i <= sparse[0][2]; i++) {
+        printf("%d %d %d\n", sparse[i][0], sparse[i][1], sparse[i][2]);
+    }
+
+    return 0;
+}
+#include <stdio.h>
+
+// Function to add two sparse matrices
+void addSparseMatrices(int mat1[100][3], int mat2[100][3], int result[100][3]) {
+    int i = 1, j = 1, k = 1;
+
+    // Copy header row
+    result[0][0] = mat1[0][0];
+    result[0][1] = mat1[0][1];
+    result[0][2] = 0; // Initialize count of non-zero elements in result
+
+    // Traverse both sparse matrices
+    while (i <= mat1[0][2] && j <= mat2[0][2]) {
+        if (mat1[i][0] < mat2[j][0] || (mat1[i][0] == mat2[j][0] && mat1[i][1] < mat2[j][1])) {
+            result[k][0] = mat1[i][0];
+            result[k][1] = mat1[i][1];
+            result[k][2] = mat1[i][2];
+            i++;
+        } else if (mat2[j][0] < mat1[i][0] || (mat2[j][0] == mat1[i][0] && mat2[j][1] < mat1[i][1])) {
+            result[k][0] = mat2[j][0];
+            result[k][1] = mat2[j][1];
+            result[k][2] = mat2[j][2];
+            j++;
+        } else {
+            result[k][0] = mat1[i][0];
+            result[k][1] = mat1[i][1];
+            result[k][2] = mat1[i][2] + mat2[j][2];
+            i++;
+            j++;
+        }
+        k++;
+        result[0][2]++;
+    }
+
+    // Remaining elements in mat1
+    while (i <= mat1[0][2]) {
+        result[k][0] = mat1[i][0];
+        result[k][1] = mat1[i][1];
+        result[k][2] = mat1[i][2];
+        i++;
+        k++;
+        result[0][2]++;
+    }
+
+    // Remaining elements in mat2
+    while (j <= mat2[0][2]) {
+        result[k][0] = mat2[j][0];
+        result[k][1] = mat2[j][1];
+        result[k][2] = mat2[j][2];
+        j++;
+        k++;
+        result[0][2]++;
+    }
+}
