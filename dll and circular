@@ -1,36 +1,31 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// Define the Node structure for a doubly linked list
 typedef struct Node
 {
     int data;
-    struct Node *next;  // Pointer to next node
-    struct Node *prev;  // Pointer to previous node
+    struct Node *next;
+    struct Node *prev;
 } Node;
 
-// Function to create a new node
 Node *createNode(int info)
 {
     Node *newNode = (Node *)malloc(sizeof(Node));
     newNode->data = info;
     newNode->next = NULL;
-    newNode->prev = NULL;  // Initialize `prev` pointer
+    newNode->prev = NULL;
     return newNode;
 }
-
-// Function to insert a node at the beginning
 Node *insert_at_front(Node *head, int info)
 {
     Node *newNode = createNode(info);
     newNode->next = head;
-    if (head != NULL)
-        head->prev = newNode;  // Update the previous pointer of the old head
+    if(head!=NULL){
+        head->prev = newNode;
+    }
     head = newNode;
     return head;
 }
-
-// Function to insert a node at the end
 Node *insert_at_end(Node *head, int info)
 {
     Node *newNode = createNode(info);
@@ -46,12 +41,10 @@ Node *insert_at_end(Node *head, int info)
             ptr = ptr->next;
         }
         ptr->next = newNode;
-        newNode->prev = ptr;  // Update the previous pointer of the new node
+        newNode->prev = ptr;
     }
     return head;
 }
-
-// Function to insert a node after a specific node
 Node *insertafter_specificNode(Node *head, int key, int info)
 {
     Node *newNode = createNode(info);
@@ -62,136 +55,134 @@ Node *insertafter_specificNode(Node *head, int key, int info)
     }
     if (ptr == NULL)
     {
-        printf("The key=%d is not found in list\n", key);
+        printf("the key=%d is not found in list", key);
     }
     else
     {
         newNode->next = ptr->next;
         newNode->prev = ptr;
-        if (ptr->next != NULL)
-        {
-            ptr->next->prev = newNode;  // Update next node's previous pointer
+        if(ptr->next!=NULL){
+            ptr->next->prev = newNode;
         }
         ptr->next = newNode;
     }
     return head;
 }
-
-// Function to delete a node from the beginning
 Node *delete_at_begining(Node *head)
 {
     if (head == NULL)
     {
-        printf("List empty\n");
+        printf("list empty");
         return head;
     }
     else
     {
         Node *ptr = head;
         head = head->next;
-        if (head != NULL)
-            head->prev = NULL;  // Update the new head's `prev` pointer
+        if(head!=NULL){
+            head->prev = NULL;
+        }
         free(ptr);
-        printf("Node deleted from the beginning\n");
+        printf("Node deleted from the begining");
         return head;
     }
 }
-
-// Function to delete a node from the end
 Node *delete_at_end(Node *head)
 {
     if (head == NULL)
     {
-        printf("List empty\n");
+        printf("list empty");
         return head;
     }
 
     if (head->next == NULL)
     {
         free(head);
-        printf("Node deleted from the end\n");
+        head = NULL;
+        printf("Node deleted from end");
         return NULL;
     }
     Node *ptr = head;
     while (ptr->next != NULL)
     {
+        
         ptr = ptr->next;
     }
-    ptr->prev->next = NULL;  // Update the second last node's `next` pointer
+    ptr->prev->next = NULL;
     free(ptr);
     printf("Node deleted from the end\n");
     return head;
 }
-
-// Function to delete a specific node after a given key
 Node *delete_after_specificNode(Node *head, int key)
 {
     if (head == NULL)
     {
-        printf("List is empty.\n");
+        printf("list empty");
         return head;
     }
+    Node *ptr = head,*prev=NULL;
 
-    Node *ptr = head;
-
-    // Traverse the list to find the node with the specified key
     while (ptr != NULL && ptr->data != key)
     {
         ptr = ptr->next;
     }
-
-    // Check if node with `key` is found and it has a next node
-    if (ptr == NULL || ptr->next == NULL)
+    if (ptr == NULL)
     {
-        printf("The key=%d is not found in the list or no node exists after it.\n", key);
+        printf("the key=%d is not found in list", key);
     }
-    else
-    {
-        // Pointer to the node to be deleted (node immediately after `key`)
-        Node *nodeToDelete = ptr->next;
-
-        // Update `next` pointer of `ptr` (current node) to skip `nodeToDelete`
-        ptr->next = nodeToDelete->next;
-
-        // If `nodeToDelete` is not the last node, update `prev` pointer of the next node
-        if (nodeToDelete->next != NULL)
+    if(ptr==head){
+        head = head->next;
+        if (head != NULL)
         {
-            nodeToDelete->next->prev = ptr;
+            head->prev = NULL;
         }
-
-        // Free the memory of the node to be deleted
-        free(nodeToDelete);
-        printf("Node deleted after the key=%d\n", key);
+        free(ptr);
+        printf("Node deleted from the begining");
+        return head;
     }
-
+    
+        if(ptr->next!=NULL){
+        prev->next->prev = ptr->prev;
+        }
+        ptr->prev->next = ptr->next;
+        free(ptr);
+        printf("node deleted with key=%d\n", key);
+    
     return head;
 }
-
-// Function to print the list
 void printList(Node *head)
 {
     Node *temp = head;
     if (temp == NULL)
     {
-        printf("Empty list\n");
+        printf("empty list");
     }
-    else
-    {
+    else{
         printf("NULL<->");
+
         while (temp != NULL)
         {
             printf("%d<->", temp->data);
             temp = temp->next;
-        }
-        printf("NULL\n");
+    }
+    printf("NULL\n");
     }
 }
-
+/*void printList(Node *head){
+    if (head == NULL) {
+        return;
+    }
+    else{
+        printList(head->next);
+        printf("%d->",head->data);
+        }
+        //printf("NULL\n");
+        }*/
 int main()
 {
     Node *head = NULL;
     int choice, key, value;
-    printf("\t \t \t Menu \t \t \t \n \n1.CREATION\n2.DISPLAY\n3.INSERT AT THE BEGINNING\n4.INSERT AT THE END \n5.INSERT AFTER SPECIFIC NODE\n6.DELETE AT THE START\n7.DELETE AT THE END\n8.DELETE A SPECIFIC NODE\n9.EXIT\n");
+    printf("\t \t \t Menu \t \t \t \n \n1.CREATION\n2.DISPLAY\n3.INSERT AT THE BEGINING\n4.INSERT AT THE END \n5.INSERT AFTER SPECIFIC NODE\n6.DELETE AT THE START\n7.DELETE AT THE END\n8.DELETE A SPECIFIC NODE\n9.EXIT\n");
 
     do
     {
@@ -201,7 +192,7 @@ int main()
         switch (choice)
         {
         case 1:
-            printf("Enter data of node to be inserted: ");
+            printf("Enter data of node to be inserted");
             scanf("%d", &value);
             head = createNode(value);
             break;
@@ -209,42 +200,43 @@ int main()
             printList(head);
             break;
         case 3:
-            printf("Enter data of node to be inserted: ");
+            printf("Enter data of node to be inserted");
             scanf("%d", &value);
             head = insert_at_front(head, value);
             break;
         case 4:
-            printf("Enter data of node to be inserted: ");
+            printf("Enter data of node to be inserted");
             scanf("%d", &value);
             head = insert_at_end(head, value);
             break;
         case 5:
-            printf("Enter the key after which the node is inserted: ");
+            printf("Enter the key after which the node is inserted");
             scanf("%d", &key);
-            printf("Enter data of node to be inserted: ");
+            printf("Enter data of node to be inserted");
             scanf("%d", &value);
             head = insertafter_specificNode(head, key, value);
             break;
         case 6:
+
             head = delete_at_begining(head);
             break;
         case 7:
+
             head = delete_at_end(head);
             break;
         case 8:
-            printf("Enter the key where the node should be deleted: ");
+            printf("Enter the key where the node be deleted");
             scanf("%d", &key);
             head = delete_after_specificNode(head, key);
             break;
         case 9:
-            printf("Exiting Program.....\n");
+            printf("Exiting Program.....");
             break;
         default:
-            printf("Invalid choice entered.\n");
+            printf("Invalid choice entered.");
             break;
         }
     } while (choice != 9);
-
     return 0;
 }
 
